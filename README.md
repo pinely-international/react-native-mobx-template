@@ -1058,4 +1058,4 @@ Questions? Issues? Feature requests? Hit me up!
 
 ---
 
-Made with ❤️ and lots of 🧃 from Kazakhstan 🇰🇿
+Made with ❤️ and lots of 🧃 from Kazakhstan 🇰🇿 for Pinely ✨
