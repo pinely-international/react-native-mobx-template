@@ -38,7 +38,7 @@ class AuthActionsStore {
          {
             id: "loginAction",
             fetchIfPending: false,
-            fetchIfHaveData: true,
+            fetchIfHaveData: false,
             onError: signInErrorHandler,
             onSuccess: signInSuccessHandler,
          }

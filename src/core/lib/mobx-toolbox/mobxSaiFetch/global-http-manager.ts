@@ -626,7 +626,7 @@ export class GlobalHttpManager {
 				id ? formatId(id) : undefined,
 				requestId,
 				mergedOptions.fetchIfHaveData,
-				mergedOptions.needPending,
+				!mergedOptions.needPending,
 				mergedOptions.takePath
 			);
 

@@ -347,7 +347,6 @@ export function mobxSaiFetch<T>(
 
 	console.log(`[mobxSaiFetch] Called with url: ${url}, method: ${method}, id: ${id}`);
 
-	// Create promise function that uses HTTP instance
 	const promiseFunction = async (): Promise<T> => {
 		const httpConfig: HttpRequestConfig = {
 			url,
@@ -436,7 +435,7 @@ export function mobxSaiFetch<T>(
 						data,
 						isFromLocalStorage,
 						options.fetchIfHaveData,
-						options.needPending,
+						!options.needPending,
 						options.takePath
 					);
 
@@ -476,7 +475,7 @@ export function mobxSaiFetch<T>(
 						data,
 						isFromLocalStorage,
 						options.fetchIfHaveData,
-						options.needPending,
+						!options.needPending, // Инвертируем: needPending: true => noPending: false
 						options.takePath
 					);
 
@@ -656,7 +655,6 @@ export function initializeHttpManager(options: {
 	return globalHttpManager;
 }
 
-// Re-exports
 export { GlobalHttpManager, globalHttpManager } from './global-http-manager';
 export { createMobxSaiHttpInstance, defaultHttpInstance, HttpInstance, HttpRequestConfig } from './http-instance';
 export type { HttpError, HttpResponse } from './http-instance';

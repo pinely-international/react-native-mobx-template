@@ -417,7 +417,7 @@ export const DebuggerUi = observer(() => {
 		);
 	};
 
-	const historyData = filterDataBySearch(globalHttpManager.debugHistory.pairs.map((pair, index) => ({
+	const historyData = filterDataBySearch(globalHttpManager.debugHistory.pairs.map((pair: any, index: number) => ({
 		...pair,
 		id: pair.id || `pair-${index}`,
 	})));
@@ -444,7 +444,7 @@ export const DebuggerUi = observer(() => {
 		id: `storageCache-${item.key}-${index}`,
 	})));
 
-	const memoizedCacheUpdatesData = filterDataBySearch(globalHttpManager.cacheUpdateHistory.updates.map((item, index) => ({
+	const memoizedCacheUpdatesData = filterDataBySearch(globalHttpManager.cacheUpdateHistory.updates.map((item: any, index: number) => ({
 		...item,
 		id: item.id || `cacheUpdate-${index}`,
 	})));
@@ -789,7 +789,6 @@ export const DebuggerUi = observer(() => {
 		</TouchableOpacity>
 	);
 
-
 	const renderCacheUpdateItem = ({ item }: { item: any; }) => {
 		const getUpdateTypeColor = (type: string) => {
 			switch (type) {
@@ -878,7 +877,7 @@ export const DebuggerUi = observer(() => {
 	};
 
 	const deleteCacheItem = (key: string) => {
-		globalWebSocketManager.requestCache.delete(key);
+		globalHttpManager.requestCache.delete(key);
 	};
 
 	const deleteLocalStorageItem = async (key: string) => {
@@ -1471,7 +1470,7 @@ export const DebuggerUi = observer(() => {
 								<View style={styles.actionButtons}>
 									<TouchableOpacity style={styles.clearButton} onPress={async () => {
 										try {
-											globalWebSocketManager.localStorageCache.clear();
+											globalHttpManager.localStorageCache.clear();
 
 											const keys = await localStorage.getAllKeys();
 											for (const key of keys) {
@@ -1811,8 +1810,6 @@ const styles = StyleSheet.create({
 	flashListContainer: {
 		paddingBottom: 10,
 	},
-
-	// Request-Response Pair Styles
 	pairContainer: {
 		backgroundColor: '#2d2d2d',
 		borderRadius: 8,
@@ -1946,7 +1943,9 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 8,
 		paddingVertical: 2,
 		borderRadius: 4,
-		height: 20,
+		height: 17,
+		alignItems: 'center',
+		justifyContent: 'center',
 	},
 	forceFetchText: {
 		color: '#fff',
