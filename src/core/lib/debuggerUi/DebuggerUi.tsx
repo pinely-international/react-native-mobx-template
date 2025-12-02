@@ -119,7 +119,7 @@ export const DebuggerUi = observer(() => {
 
 			for (const key of keys) {
 				try {
-					if (key.startsWith('ws_cache_')) continue;
+					if (key.startsWith('ws_cache_') || key.startsWith('sai_http_cache')) continue;
 
 					const value = await localStorage.get(key);
 					if (!isImageUrl(value) && !hasImageFields(value)) {
@@ -148,7 +148,7 @@ export const DebuggerUi = observer(() => {
 
 			for (const key of keys) {
 				try {
-					if (!key.startsWith('ws_cache_')) continue;
+					if (!key.startsWith('ws_cache_') && !key.startsWith('sai_http_cache')) continue;
 
 					const value = await localStorage.get(key);
 					data.push({
@@ -848,7 +848,7 @@ export const DebuggerUi = observer(() => {
 		try {
 			const keys = await localStorage.getAllKeys();
 			for (const key of keys) {
-				if (key.startsWith('ws_cache_')) continue;
+				if (key.startsWith('ws_cache_') || key.startsWith('sai_http_cache')) continue;
 
 				const value = await localStorage.get(key);
 				if (!isImageUrl(value) && !hasImageFields(value)) {
@@ -1474,7 +1474,7 @@ export const DebuggerUi = observer(() => {
 
 											const keys = await localStorage.getAllKeys();
 											for (const key of keys) {
-												if (key.startsWith('ws_cache_')) {
+												if (key.startsWith('ws_cache_') || key.startsWith('sai_http_cache')) {
 													await localStorage.remove(key);
 												}
 											}

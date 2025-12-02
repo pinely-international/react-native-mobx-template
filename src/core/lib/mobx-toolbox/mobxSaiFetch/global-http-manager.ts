@@ -1,3 +1,4 @@
+import { checker } from '@lib/helpers';
 import { extractDataByPath } from '@lib/obj';
 import { formatId } from '@lib/text';
 import { localStorage } from '@storage/index';
@@ -587,6 +588,9 @@ export class GlobalHttpManager {
 		};
 
 		const { id, queueStrategy, optimisticUpdate, storageCache, isSetData } = mergedOptions;
+
+		checker(id, 'id is required');
+
 		const requestId = id ? `req_${formatId(id)}_${Date.now()}` : `req_${Date.now()}`;
 
 		this.requestToIdMap.set(requestId, id ? formatId(id) : requestId);
@@ -606,6 +610,55 @@ export class GlobalHttpManager {
 
 		if (queueStrategy?.enabled && !fromWhere) {
 			return this.enqueueRequest(promiseFunction, data, mergedOptions, requestId, tempId);
+		}
+
+		const takeCachePriority = mergedOptions.takeCachePriority || defaultFetchOptions.takeCachePriority;
+		const isScrollFetch = fromWhere === 'fromScroll';
+		let localStorageData: any = null;
+
+		if (storageCache && !isScrollFetch && takeCachePriority === 'localStorage') {
+			localStorageData = await this.getFromLocalStorage(formatId(id));
+			if (localStorageData) {
+				console.log(`[sendRequest] ✅ Found data in localStorage for ${id}`);
+			}
+		}
+
+		if (localStorageData && !mergedOptions.fetchIfHaveData) {
+			console.log(`[sendRequest] 📦 Using LOCAL-CACHED data, skipping HTTP request`);
+
+			if (data) {
+				runInAction(() => {
+					data.data = localStorageData;
+					data.status = "fulfilled";
+					data.isPending = false;
+					data.isFulfilled = true;
+					data.isRejected = false;
+				});
+			}
+
+			const url = mergedOptions.url || '';
+			const method = mergedOptions.method || 'GET';
+			this.debugHistory.addCachedRequest(
+				url,
+				method,
+				data.body,
+				formatId(id),
+				localStorageData,
+				true,
+				mergedOptions.fetchIfHaveData,
+				!mergedOptions.needPending,
+				mergedOptions.takePath
+			);
+
+			if (mergedOptions.onSuccess) {
+				try {
+					mergedOptions.onSuccess(localStorageData, data.body);
+				} catch (callbackError) {
+					console.error('[sendRequest] Error in onSuccess callback:', callbackError);
+				}
+			}
+
+			return Promise.resolve(undefined);
 		}
 
 		try {
