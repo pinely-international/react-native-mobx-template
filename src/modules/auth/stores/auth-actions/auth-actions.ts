@@ -13,12 +13,12 @@ class AuthActionsStore {
       const { registerSuccessHandler, registerErrorHandler } = authServiceStore;
 
       this.registerSai = mobxSaiFetch(
-         "",
+         "/register",
          {},
          {
             id: "registerAction",
             fetchIfPending: false,
-            fetchIfHaveData: true,
+            fetchIfHaveData: false,
             onError: registerErrorHandler,
             onSuccess: registerSuccessHandler,
          }
@@ -33,7 +33,7 @@ class AuthActionsStore {
       const { signInSuccessHandler, signInErrorHandler } = authServiceStore;
 
       this.loginSai = mobxSaiFetch(
-         "/login",
+         "https://jsonplaceholder.typicode.com/todos/1",
          {},
          {
             id: "loginAction",
@@ -85,4 +85,5 @@ class AuthActionsStore {
       );
    };
 }
+
 export const authActionsStore = new AuthActionsStore();

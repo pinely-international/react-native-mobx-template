@@ -475,7 +475,7 @@ export function mobxSaiFetch<T>(
 						data,
 						isFromLocalStorage,
 						options.fetchIfHaveData,
-						!options.needPending, // Инвертируем: needPending: true => noPending: false
+						!options.needPending,
 						options.takePath
 					);
 
@@ -496,30 +496,9 @@ export function mobxSaiFetch<T>(
 			instance.body = body;
 			instance.fetch!(promiseFunction);
 			return instance;
-		} else {
-			const takeCachePriority = options.takeCachePriority || defaultFetchOptions.takeCachePriority || 'localCache';
-			const storageCache = options.storageCache !== undefined ? options.storageCache : defaultFetchOptions.storageCache;
-
-			if (storageCache && takeCachePriority === 'localStorage') {
-				globalHttpManager.getFromLocalStorage(formatId(id)).then((localStorageData) => {
-					if (localStorageData) {
-						const instance = getSaiInstanceById<T>(formatId(id));
-						if (instance && !instance.data) {
-							instance.data = localStorageData as T;
-							instance.status = "fulfilled";
-							instance.isPending = false;
-							instance.isFulfilled = true;
-							instance.isRejected = false;
-							console.log(`[mobxSaiFetch] ✅ Loaded data from localStorage for ${id}`);
-						}
-					}
-				}).catch(() => {
-					console.error(`[mobxSaiFetch] Error loading data from localStorage for ${id}`);
-				});
-			}
-
-			console.log(`[mobxSaiFetch] No cached entry found for ${id}, creating new instance`);
 		}
+
+		console.log(`[mobxSaiFetch] No cached entry found for ${id}, creating new instance`);
 	}
 
 	const instance = (new MobxSaiFetch<T>({ ...options, url, method })) as MobxSaiFetchInstance<T>;
@@ -536,6 +515,7 @@ export function mobxSaiFetch<T>(
 		console.log(`[mobxSaiFetch] Cached new instance with id: ${id}`);
 	}
 
+	// Теперь проверка localStorage происходит в sendRequest, просто вызываем fetch
 	instance.fetch!(promiseFunction);
 
 	return instance;
